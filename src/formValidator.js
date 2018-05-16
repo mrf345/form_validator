@@ -4,25 +4,27 @@ var formValidator = function (options={}, callback=function () {}) {
     rFormValidator = {} // object to return
 
     rFormValidator.options = {
-        formId: options.formId || '#formValidator',
-        inputIds: options.inputIds || ['#validEmail'],
-        texts: options.texts || ['Please enter a valid email'], // message to display if validator is false
+        formIds: options.formIds || ['#formValidator'],
+        inputIds: options.inputIds || [['#validEmail']],
+        texts: options.texts || [['Please enter a valid email']], // message to display if validator is false
         textClass: options.textClass || '',
         textStyle: options.textStyle || {'color': 'black'},
         duration: options.duration * 1000 || 3000,
-        validators: options.validators || [function (data) {
+        validators: options.validators || [[function (data) {
             return false
-        }], // function to check data and validate by returning true false
-        before: options.before || 'false' // where the text message will be appended. Before or after the input.
+        }]], // function to check data and validate by returning true false
+        before: options.before || [['false']] // where the text message will be appended. Before or after the input.
     }
     
     rFormValidator.loops = {} // to store animate intervals
     rFormValidator.text = {}
-    rFormValidator.options.inputIds.forEach(function (i, iIndex) {
-        rFormValidator.text[i] = $('<p>').addClass(rFormValidator.options.textClass + ' ' + i.slice(1))
-        .css(rFormValidator.options.textStyle).text(rFormValidator.options.texts[iIndex])
-        .click(function () {
-            clearInterval(rFormValidator.loops[i])
+    rFormValidator.options.formIds.forEach(function (f, fIndex) {
+        rFormValidator.options.inputIds[fIndex].forEach(function (i, iIndex) {
+            rFormValidator.text[i] = $('<p>').addClass(rFormValidator.options.textClass + ' ' + i.slice(1))
+            .css(rFormValidator.options.textStyle).text(rFormValidator.options.texts[fIndex][iIndex])
+            .click(function () {
+                clearInterval(rFormValidator.loops[i])
+            })
         })
     })
 
@@ -43,17 +45,18 @@ var formValidator = function (options={}, callback=function () {}) {
     }
 
     rFormValidator.__init__ = function () {
-        $(rFormValidator.options.formId).submit(function (event) {
-            alert('form submitted !')
-            rFormValidator.options.inputIds.forEach(function (i, iIndex) {
-                if (!rFormValidator.options.validators[iIndex]($(i).val())) {
-                    // alert('inside exceptions')
-                    event.preventDefault()
-                    if (rFormValidator.options.before === 'true') $(i).before(rFormValidator.text[i])
-                    else $(i).after(rFormValidator.text[i])
-                    rFormValidator.__effect__(i)
-                    callback()
-                }
+        rFormValidator.options.formIds.forEach(function (f, fIndex) {
+            $(f).submit(function (event) {
+                alert('form submitted !')
+                rFormValidator.options.inputIds[fIndex].forEach(function (i, iIndex) {
+                    if (!rFormValidator.options.validators[fIndex][iIndex]($(i).val())) {
+                        event.preventDefault()
+                        if (rFormValidator.options.before[fIndex][iIndex] === 'true') $(i).before(rFormValidator.text[i])
+                        else $(i).after(rFormValidator.text[i])
+                        rFormValidator.__effect__(i)
+                        callback()
+                    }
+                })
             })
         })
     }
