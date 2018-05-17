@@ -21,8 +21,9 @@ var formValidator = function (options={}, callback=function () {}) {
     rFormValidator.options.formIds.forEach(function (f, fIndex) {
         rFormValidator.options.inputIds[fIndex].forEach(function (i, iIndex) {
             rFormValidator.text[i] = $('<p>').addClass(rFormValidator.options.textClass + ' ' + i.slice(1))
-            .css(rFormValidator.options.textStyle).text(rFormValidator.options.texts[fIndex][iIndex])
+            .css(Object.assign({'cursor': 'pointer'}, rFormValidator.options.textStyle)).text(rFormValidator.options.texts[fIndex][iIndex])
             .click(function () {
+                $(this).css({'cursor': 'default'})
                 clearInterval(rFormValidator.loops[i])
             })
         })
@@ -47,7 +48,6 @@ var formValidator = function (options={}, callback=function () {}) {
     rFormValidator.__init__ = function () {
         rFormValidator.options.formIds.forEach(function (f, fIndex) {
             $(f).submit(function (event) {
-                alert('form submitted !')
                 rFormValidator.options.inputIds[fIndex].forEach(function (i, iIndex) {
                     if (!rFormValidator.options.validators[fIndex][iIndex]($(i).val())) {
                         event.preventDefault()
