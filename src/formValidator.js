@@ -23,8 +23,8 @@ var formValidator = function (options={}, callback=function () {}) {
             rFormValidator.text[i] = $('<p>').addClass(rFormValidator.options.textClass + ' ' + i.slice(1))
             .css(Object.assign({'cursor': 'pointer'}, rFormValidator.options.textStyle)).text(rFormValidator.options.texts[fIndex][iIndex])
             .click(function () {
-                $(this).css({'cursor': 'default'})
                 clearInterval(rFormValidator.loops[i])
+                $(rFormValidator.text[i]).remove()
             })
         })
     })

@@ -14,11 +14,11 @@
     crossorigin="anonymous"></script>
     <script src="src/formValidator.js" type="text/javascript"></script>
     <script type="text/javascript">
-        formValidator({validators: [function (data) {
+        formValidator({validators: [[function (data) {
             return data.indexOf('a') !== -1
         },function (data) {
             return data.indexOf('b') !== -1
-        }], inputIds: ['#valid1', '#valid2'], texts: ['* Enter valid email', '* Enter valid email 2']})
+        }]], inputIds: [['#valid1', '#valid2']], texts: [['* Enter valid email', '* Enter valid email 2']]})
     </script>
     <title>Document</title>
 </head>
